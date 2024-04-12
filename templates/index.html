@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <meta property="og:title" content="My website title" />
+    <meta property="og:description" content="Summary of the contents of the page you are viewing" />
+    <meta property="og:image" content="{{ url_for('static', filename='ogimage.png') }}" />
+  
+
+    <!-- Bootstrap CSS -->
+    <link href="bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+    <link https= "//cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+        crossorigin="anonymous" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js">https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity = "sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"</script>
+    <script crossorigin="anonymous"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+    <title>Sparta Coding Club | Bootstrap Practice</title>
+
+    <script>
+    $(document).ready(function () {
+        // alert('Fully loaded');   
+        listing();
+        bsCustomFileInput.init()
+    });
+
+    function listing() {
+        $.ajax({
+            type: "GET",
+            url: "/diary",
+            data: {},
+            success: function (response) {
+                let articles = response["articles"];
+                for (let i = 0; i < articles.length; i++) {
+                    let title = articles[i]["title"];
+                    let content = articles[i]["content"];
+                    let file = articles[i]['file'];
+                    let profile = articles[i]['profile'];
+                    let temp_html = `
+                    <div class="col-4">
+                        <div class="card">
+                            <img src="../${profile}"
+                                class="card-img-top" alt="..." />
+                            <div class="card-body">
+                                <h5 class="card-title">${title}</h5>
+                                <p class="card-text">${content} </p>
+                                <h6 class="card-subtitle mb-2 text-muted">2022.02.14</h6>
+                                <div class="profile">
+                                <img src="../${profile}" class="profile-img" alt="Profile Image" />
+                                <p class="profile-name">Nama Pengguna</p>
+                            </div>
+                        </div>
+                    </div>
+                            `;
+                    $("#cards-box").append(temp_html);     
+                    // Append temp_html to some element in your HTML, like '#cards-box'
+                }
+            }
+        });
+    }
+
+    function posting() {
+        let title = $('#image-title').val();
+        let content = $('#image-description').val();
+
+        // Check if title or content is empty
+        if (title.trim() === '' || content.trim() === '') {
+            alert('Title and content cannot be empty!');
+            return; // Exit the function if either title or content is empty
+        }
+
+        let file = $("#image").prop("files")[0];
+        let profile = $("#profile").prop("files")[0];
+
+        let form_data = new FormData();
+
+        form_data.append("file_give", file);
+        form_data.append("profile_give",profile);
+        form_data.append("title_give", title);
+        form_data.append("content_give", content);
+
+
+        $.ajax({
+            type: "POST",
+            url: "/diary",
+            data:form_data,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                console.log(response);
+                window.location.reload();
+            }
+        });
+    }
+
+
+    </script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Jua&amp;display=swap" rel="stylesheet" />
+
+   
+</head>
+
+<body>
+    <div class="container">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">Personal Diary</h1>
+                <div class="input-group mb-3 custom-file">
+                    <input class="form-control" type="file" id="image" />
+                </div>
+
+                <div class="input-group mb-3 custom-file">
+                    <input class="form-control" type="file" id="profile" />
+                </div>
+
+                <div class="mb-3 custom-file">
+                    <input type="text" class="form-control" id="image-title" placeholder="The title of your image" />
+                </div>
+                <div class="mb-3">
+                    <textarea placeholder="The description of your image" class="form-control" id="image-description"
+                        rows="3"></textarea>
+                </div>
+                <button onclick="posting()"  class="btn btn-primary">Save</button>
+            </div>
+        </div>
+        <div class="row justify-content-start" id="cards-box">
+            <div class="col-4">
+                <div class="card">
+                    <img src="../static/gunung fuji.avif  "style="width: 650px; height: 600 px;"
+                        class="card-img-top" alt="..." />
+                    <div class="card-body">
+                        <div class="profile">
+                            <img src="../static/jesika.avif" class="Profile-img" alt="Profile img" style="width: 75px; height: 113px;"
+                            /> <p class="profile-name">Jesika</p>
+                        <h5 class="card-title">GUNUNG FUJI</h5>
+                        <p class="card-text">
+                            Gunung Fuji adalah salah satu dari "Tiga Gunung Suci" (三霊山, Sanreizan) bersama dengan Gunung Tate dan Gunung Haku. Gunung ini merupakan salah satu Situs Bersejarah Jepang. Gunung itu ditambahkan ke Daftar Warisan Dunia sebagai Situs Budaya pada 22 Juni 2013.Menurut UNESCO, Gunung Fuji telah "menginspirasi seniman dan penyair dan menjadi objek ziarah selama berabad-abad". UNESCO mengakui 25 situs budaya yang menarik di dalam wilayah Gunung Fuji. 25 lokasi ini termasuk gunung dan kuil Shinto, Fujisan Hongū Sengen Taisha, serta Kuil Kepala Buddha Taisekiji yang didirikan pada 1290, yang kemudian digambarkan oleh seniman ukiyo-e Jepang Katsushika Hokusai.
+                        </p>
+                        <h6 class="card-subtitle mb-2 text-muted">2024.04.13</h6>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <img src="../static/image-defoul.avif "style="width: 650px; height: 600 px;"
+                        class="card-img-top" alt="..." />
+                    <div class="card-body">
+                        <div class="profile">
+                            <img src="../static/jesika.avif" class="Profile-img" alt="Profile img" style="width: 75px; height: 113px;" 
+                            /><p class="profile-name">Jesika</p>
+                        <h5 class="card-title">TAMAN PINK</h5>
+                        <p class="card-text">
+                            Warna pink umum (Dianthus plumarius) dalam campuran beragam warna akan menambah cahaya dan pesona setiap rangkaian bunga musim panas. Tidak ada mekar abadi lainnya pada saat ini dalam setahun yang dapat menandingi kelezatan perbungaan taman pink yang terdiri dari kelopak bergelombang. Anda akan menemukan varietas dengan mekar putih, merah, dan merah muda dalam nuansa berbeda, serta tanaman bicolour dalam pilihan kami.
+
+                            Tingginya sekitar 30 cm. Batang mereka yang ramping, ditutupi dengan daun hijau kebiru-biruan yang sempit, yang menggarisbawahi tampilan bunga yang lembut, merangkak dekat ke tanah. Merah muda biasa tumbuh paling baik dari bibit yang dapat Anda hasilkan dari bulan April hingga Juni. Ini ditransplantasikan ke perbatasan di paruh kedua musim panas, pada bulan Agustus. Dimulai dengan tahun kedua budidaya, tanaman ini mekar terus-menerus dari bulan Juni hingga Agustus dan menyilaukan dengan aroma yang menarik kupu-kupu. Spesies ini menyukai tanah yang permeabel dan merasa sama nyamannya di bawah sinar matahari dan sebagian teduh. Anda bisa menanamnya di tanggul kering, di mana ia akan mekar tahun demi tahun.
+                        </p>
+                        <h6 class="card-subtitle mb-2 text-muted">2024.04.12</h6>
+                        
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <img src="../static/taman unggu.avif "style="width: 650px; height: 600 px;"
+                        class="card-img-top" alt="..." />
+                    <div class="card-body">
+                        <div class="profile">
+                            <img src="../static/jesika.avif" class="Profile-img" alt="Profile img" style="width: 75px; height: 113px;"
+                            /><p class="profile-name">Jesika</p>
+                    </div>
+                        <h5 class="card-title">TAMAN UNGGU</h5>
+                        <p class="card-text">
+                            Taman seluas 48 hektare ini memiliki tiga danau yang saling tersambung. Tepi timur danau terdiri dari beberapa bukit kecil dan dibentuk dari tanah yang dikeruk dari danau, untuk menyeimbangkan bentang alam bukit alami di pantai barat danau. Ada lima jembatan yang menghubungkan danau, pulau dan bukit sehingga menjadi satu kawasan yang terintegrasi. Sungai Changhe mengalir di utara danau ini.
+                        </p>
+                        <h6 class="card-subtitle mb-2 text-muted">2024.04.12</h6>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
